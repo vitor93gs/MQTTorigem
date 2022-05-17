@@ -8,28 +8,6 @@ var options = {
 	password: 'Senha@Segura01',
 };
 
-var Bateria = {
-	Identificador: 0,
-	SOC: '',
-};
-
-var idBateria = Math.random() * 10000;
-Bateria.Identificador = idBateria;
-
-var Moto = {
-	estado: 'off',
-	chassi: '',
-	bateria: true,
-};
-
-var crypto = require('crypto');
-var chassi = crypto.randomBytes(7).toString('hex');
-Moto.chassi = chassi;
-
-Moto.bateria ? (Moto.bateriaInfo = Bateria) : null;
-
-console.log(Moto);
-
 //initialize the MQTT client
 var client = mqtt.connect(options);
 
@@ -42,15 +20,57 @@ client.on('error', function (error) {
 	console.log(error);
 });
 
+// subscribe to topic 'my/test/topic'
+const newConnection = 'toggleBike';
+client.subscribe(newConnection);
+
+var Battery = {
+	Id: 0,
+	SOC: '45%',
+};
+
+var Bike = {
+	state: 'off',
+	chassi: '',
+	drawer: 'drawer_open',
+	battery: true,
+	fábrica: 'Romenia',
+};
+
+var crypto = require('crypto');
+var chassi = crypto.randomBytes(7).toString('hex');
+Bike.chassi = chassi;
+
+var idBattery = parseInt(Math.random() * 1000000, 10);
+Battery.Id = idBattery;
+
+function RemoveBattery() {
+    Bike.drawer === "drawer_open"? Bike.battery = false : null;	
+}
+
+function ToggleBikeState(state) {
+    Bike.drawer === "drawer_closed"? Bike.state = state : null;
+}
+
+function ToggleDrawer(){
+    Bike.drawer === "drawer_open"? Bike.drawer = "drawer_closed" : Bike.drawer = "drawer_open";
+}
+
+Bike.battery ? (Bike.batteryInfo = Battery) : null;
+
 client.on('message', function (topic, message) {
 	//Called each time a message is received
 	console.log('Received message:', topic, message.toString());
+	if (topic === 'toggleBike') {
+		let msg = message.toString();
+		msg === 'on' || msg === 'off' ? ToggleBikeState(msg) : null;
+		console.log(Bike);
+	}
+	Bike.state === 'on'
+		? client.publish(`bike/telemetry/${chassi}`, JSON.stringify(Bike))
+		: null;
 });
 
-// subscribe to topic 'my/test/topic'
-// const newConnection = 'xpd';
-// client.subscribe(newConnection);
-// console.log(`subscribed to - ${newConnection}`);
-
-// publish message 'Hello' to topic 'my/test/topic'
-client.publish(`bike/telemetry/${chassi}`, JSON.stringify(Moto));
+Bike.state === 'on'
+	? client.publish(`bike/telemetry/${chassi}`, JSON.stringify(Bike))
+	: null;
