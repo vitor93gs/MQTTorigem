@@ -32,9 +32,9 @@ var Battery = {
 var Bike = {
 	state: 'off',
 	chassi: '',
-	drawer: 'drawer_open',
+	drawer: 'drawer_closed',
 	battery: true,
-	fábrica: 'Romenia',
+	fabrica: 'Romenia',
 };
 
 var crypto = require('crypto');
@@ -45,15 +45,17 @@ var idBattery = parseInt(Math.random() * 1000000, 10);
 Battery.Id = idBattery;
 
 function RemoveBattery() {
-    Bike.drawer === "drawer_open"? Bike.battery = false : null;	
+	Bike.drawer === 'drawer_open' ? (Bike.battery = false) : null;
 }
 
 function ToggleBikeState(state) {
-    Bike.drawer === "drawer_closed"? Bike.state = state : null;
+	Bike.drawer === 'drawer_closed' ? (Bike.state = state) : null;
 }
 
-function ToggleDrawer(){
-    Bike.drawer === "drawer_open"? Bike.drawer = "drawer_closed" : Bike.drawer = "drawer_open";
+function ToggleDrawer() {
+	Bike.drawer === 'drawer_open'
+		? (Bike.drawer = 'drawer_closed')
+		: (Bike.drawer = 'drawer_open');
 }
 
 Bike.battery ? (Bike.batteryInfo = Battery) : null;
