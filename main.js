@@ -8,20 +8,27 @@ var options = {
 	password: 'Senha@Segura01',
 };
 
-var MOTO = {
-    "chassi": "",
-    "bateria": {
-        presente: false,
-        
-    }
-}
+var Bateria = {
+	Identificador: 0,
+	SOC: '',
+};
 
+var idBateria = Math.random() * 10000;
+Bateria.Identificador = idBateria;
+
+var Moto = {
+	estado: 'off',
+	chassi: '',
+	bateria: true,
+};
 
 var crypto = require('crypto');
 var chassi = crypto.randomBytes(7).toString('hex');
-console.log(chassi);
+Moto.chassi = chassi;
 
+Moto.bateria ? (Moto.bateriaInfo = Bateria) : null;
 
+console.log(Moto);
 
 //initialize the MQTT client
 var client = mqtt.connect(options);
@@ -41,9 +48,9 @@ client.on('message', function (topic, message) {
 });
 
 // subscribe to topic 'my/test/topic'
-const newConnection = 'xpd';
-client.subscribe(newConnection);
-console.log(`subscribed to - ${newConnection}`);
+// const newConnection = 'xpd';
+// client.subscribe(newConnection);
+// console.log(`subscribed to - ${newConnection}`);
 
 // publish message 'Hello' to topic 'my/test/topic'
-client.publish('xpd', 'só os boladao');
+client.publish(`bike/telemetry/${chassi}`, JSON.stringify(Moto));
