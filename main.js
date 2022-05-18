@@ -1,8 +1,7 @@
-import { Bike } from './Classes/Bike';
-import { Battery } from './Classes/Battery';
+const Bike = require('./Classes/Bike.js');
+const Battery = require('./Classes/Battery');
 
 var mqtt = require('mqtt');
-
 
 var options = {
 	host: '4e3fabb95a98476e92aec3ac8c3b22ac.s1.eu.hivemq.cloud',

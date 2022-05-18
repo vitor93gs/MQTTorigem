@@ -1,5 +1,24 @@
 {
   "dependencies": {
     "mqtt": "^4.3.7"
-  }
+  },
+  "name": "mqtt-js-hivemq-cloud",
+  "description": "node.js installed",
+  "version": "1.0.0",
+  "main": "main.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vitor93gs/MQTTorigem.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vitor93gs/MQTTorigem/issues"
+  },
+  "homepage": "https://github.com/vitor93gs/MQTTorigem#readme"
 }

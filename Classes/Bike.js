@@ -1,4 +1,4 @@
-export class Bike {
+class Bike {
 	constructor(chassi, state, battery, fabric) {
 		this.chassi = chassi;
 		this.state = state;
@@ -16,19 +16,27 @@ export class Bike {
         Battery Info: ${this.batteryInfo}`);
 	}
 	toggleBikeState(state) {
-		Bike.drawer === 'drawer_closed' ? (Bike.state = state) : null;
+		this.drawer === 'drawer_closed' ? (this.state = state) : null;
 	}
 	toggleDrawer() {
-		Bike.drawer === 'drawer_open'
-			? (Bike.drawer = 'drawer_closed')
-			: (Bike.drawer = 'drawer_open');
+		this.drawer === 'drawer_open'
+			? (this.drawer = 'drawer_closed')
+			: (this.drawer = 'drawer_open');
 	}
 	ignition() {
 		this.drawer === 'drawer_closed'
 			? (this.running = true)
 			: console.log('Please close the drawer before ignition');
+		while (this.running === true) {
+			console.log('Running');
+		}
 	}
-    changeBattery(battery) {
-        this.drawer === 'drawer_open'? this.batteryInfo = battery : console.log('Please close the drawer before changing the battery');
-    }
+	changeBattery(battery) {
+		this.drawer === 'drawer_open'
+			? (this.batteryInfo = battery)
+			: console.log(
+					'Please close the drawer before changing the battery'
+			  );
+	}
 }
+module.exports = Bike;
