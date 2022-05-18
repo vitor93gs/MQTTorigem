@@ -1,4 +1,8 @@
+import { Bike } from './Classes/Bike';
+import { Battery } from './Classes/Battery';
+
 var mqtt = require('mqtt');
+
 
 var options = {
 	host: '4e3fabb95a98476e92aec3ac8c3b22ac.s1.eu.hivemq.cloud',
@@ -24,55 +28,28 @@ client.on('error', function (error) {
 const newConnection = 'toggleBike';
 client.subscribe(newConnection);
 
-var Battery = {
-	Id: 0,
-	SOC: '45%',
-};
-
-var Bike = {
-	state: 'off',
-	chassi: '',
-	drawer: 'drawer_closed',
-	battery: true,
-	fabrica: 'Romenia',
-};
-
 var crypto = require('crypto');
 var chassi = crypto.randomBytes(7).toString('hex');
-Bike.chassi = chassi;
 
-var idBattery = parseInt(Math.random() * 1000000, 10);
-Battery.Id = idBattery;
+var thisBike = new Bike(chassi, 'off', true, 'Roraima');
 
-function RemoveBattery() {
-	Bike.drawer === 'drawer_open' ? (Bike.battery = false) : null;
-}
+var thisBattery = new Battery(100);
 
-function ToggleBikeState(state) {
-	Bike.drawer === 'drawer_closed' ? (Bike.state = state) : null;
-}
-
-function ToggleDrawer() {
-	Bike.drawer === 'drawer_open'
-		? (Bike.drawer = 'drawer_closed')
-		: (Bike.drawer = 'drawer_open');
-}
-
-Bike.battery ? (Bike.batteryInfo = Battery) : null;
+thisBike.battery ? (thisBike.batteryInfo = thisBattery) : null;
 
 client.on('message', function (topic, message) {
 	//Called each time a message is received
 	console.log('Received message:', topic, message.toString());
 	if (topic === 'toggleBike') {
 		let msg = message.toString();
-		msg === 'on' || msg === 'off' ? ToggleBikeState(msg) : null;
-		console.log(Bike);
+		msg === 'on' || msg === 'off' ? thisBike.toggleBikeState(msg) : null;
+		console.log(thisBike);
 	}
-	Bike.state === 'on'
-		? client.publish(`bike/telemetry/${chassi}`, JSON.stringify(Bike))
+	thisBike.state === 'on'
+		? client.publish(`bike/telemetry/${chassi}`, JSON.stringify(thisBike))
 		: null;
 });
 
-Bike.state === 'on'
-	? client.publish(`bike/telemetry/${chassi}`, JSON.stringify(Bike))
+thisBike.state === 'on'
+	? client.publish(`bike/telemetry/${chassi}`, JSON.stringify(thisBike))
 	: null;
