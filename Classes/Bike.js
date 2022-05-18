@@ -7,6 +7,7 @@ class Bike {
 		this.drawer = 'drawer_closed';
 		this.batteryInfo = {};
 		this.running = false;
+		this.km = 0;
 	}
 	displayInfo() {
 		console.log(`Chassi: ${this.chassi}
@@ -24,11 +25,19 @@ class Bike {
 			: (this.drawer = 'drawer_open');
 	}
 	ignition() {
-		this.drawer === 'drawer_closed'
-			? (this.running = true)
-			: console.log('Please close the drawer before ignition');
-		while (this.running === true) {
-			console.log('Running');
+		if (this.drawer === 'drawer_closed' && this.battery === true) {
+			this.running = true;
+			console.log('Bike Running');
+			var run = setInterval(() => {
+				this.batteryInfo.soc -= 5;
+				this.km += 1;
+				if (this.batteryInfo.soc === 0) {
+					clearInterval(run);
+					this.running = false;
+				}
+			}, 5000);
+		} else {
+			console.log('Please close the drawer before ignition');
 		}
 	}
 	changeBattery(battery) {
@@ -37,6 +46,12 @@ class Bike {
 			: console.log(
 					'Please close the drawer before changing the battery'
 			  );
+	}
+	telemetry() {
+		Client.publish(
+			`bike/telemetry/${this.chassi}`,
+			JSON.stringify(globalThis.thisBike)
+		);
 	}
 }
 module.exports = Bike;

@@ -44,9 +44,17 @@ client.on('message', function (topic, message) {
 		msg === 'on' || msg === 'off' ? thisBike.toggleBikeState(msg) : null;
 		console.log(thisBike);
 	}
-	thisBike.state === 'on'
-		? client.publish(`bike/telemetry/${chassi}`, JSON.stringify(thisBike))
-		: null;
+	if (thisBike.state === 'on') {
+		client.publish(`bike/telemetry/${chassi}`, JSON.stringify(thisBike));
+		thisBike.ignition();
+		var running = setInterval(() => {
+			client.publish(
+				`bike/telemetry/${chassi}`,
+				JSON.stringify(thisBike)
+			);
+			thisBike.batteryInfo.soc === 0 ? clearInterval(running) : null;
+		}, 5000);
+	}
 });
 
 thisBike.state === 'on'
